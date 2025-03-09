@@ -1,6 +1,6 @@
 # Generador de Fondos Degradados para Gamers
 
-![Banner del Proyecto](/api/placeholder/800/200)
+![Banner del Proyecto](proyecto.jpg)
 
 ## Descripción
 
