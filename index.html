@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Fondos Degradados para Gamers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #ff5722;
+            text-shadow: 0 0 10px rgba(255, 87, 34, 0.5);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(255, 65, 108, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .gradients-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .gradient-card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .gradient-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .gradient-preview {
+            height: 200px;
+            width: 100%;
+        }
+        
+        .gradient-info {
+            padding: 15px;
+        }
+        
+        .gradient-name {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+        }
+        
+        .gradient-code {
+            background-color: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #333;
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .copy-btn:hover {
+            background: #444;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Generador de Fondos Degradados para Gamers</h1>
+            <p>Genera combinaciones de colores impresionantes para tus proyectos gaming</p>
+        </header>
+        
+        <div class="controls">
+            <button id="generateBtn">Generar Nuevos Fondos</button>
+        </div>
+        
+        <div class="gradients-container" id="gradientsContainer">
+            <!-- Las tarjetas de gradientes serán generadas por JavaScript -->
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">Código copiado al portapapeles</div>
+    
+    <footer>
+        <p>Creado para gamers y diseñadores con 💖</p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Definir los gradientes predeterminados con nombres gaming
+            const presetGradients = [
+                { name: "Cyber Neon", colors: ["#ff00cc", "#333399"] },
+                { name: "Lava Rush", colors: ["#f12711", "#f5af19"] },
+                { name: "Night Owl", colors: ["#2980b9", "#2c3e50"] },
+                { name: "Radioactive", colors: ["#11998e", "#38ef7d"] },
+                { name: "Blood Moon", colors: ["#8e0e00", "#1f1c18"] },
+                { name: "Digital Sky", colors: ["#56ccf2", "#2f80ed"] },
+                { name: "Ethereal", colors: ["#7b4397", "#dc2430"] },
+                { name: "Frozen Core", colors: ["#4facfe", "#00f2fe"] },
+                { name: "Shadow Realm", colors: ["#000000", "#434343"] },
+                { name: "Toxic Waste", colors: ["#d3959b", "#bfe6ba"] },
+                { name: "Void Walker", colors: ["#232526", "#414345"] },
+                { name: "Energy Pulse", colors: ["#b92b27", "#1565c0"] },
+                { name: "Victory Royale", colors: ["#2193b0", "#6dd5ed"] },
+                { name: "Alpha Strike", colors: ["#FF057C", "#8D0B93", "#321575"] },
+                { name: "Stealth Mode", colors: ["#0f0c29", "#302b63", "#24243e"] },
+                { name: "Power Surge", colors: ["#f953c6", "#b91d73"] },
+                { name: "Fatal Error", colors: ["#ee0979", "#ff6a00"] },
+                { name: "Ultimate Combo", colors: ["#1e3c72", "#2a5298"] },
+                { name: "Boss Fight", colors: ["#ff4b1f", "#ff9068"] },
+                { name: "Last Stand", colors: ["#0cebeb", "#20e3b2", "#29ffc6"] }
+            ];
+            
+            // Función para generar el código CSS del gradiente
+            function generateGradientCSS(colors) {
+                return `background: linear-gradient(45deg, ${colors.join(', ')});`;
+            }
+            
+            // Función para mostrar los gradientes en la interfaz
+            function displayGradients(gradients) {
+                const container = document.getElementById('gradientsContainer');
+                container.innerHTML = '';
+                
+                gradients.forEach(gradient => {
+                    const card = document.createElement('div');
+                    card.className = 'gradient-card';
+                    
+                    const preview = document.createElement('div');
+                    preview.className = 'gradient-preview';
+                    preview.style = generateGradientCSS(gradient.colors);
+                    
+                    const info = document.createElement('div');
+                    info.className = 'gradient-info';
+                    
+                    const name = document.createElement('h3');
+                    name.className = 'gradient-name';
+                    name.textContent = gradient.name;
+                    
+                    const code = document.createElement('div');
+                    code.className = 'gradient-code';
+                    code.textContent = generateGradientCSS(gradient.colors);
+                    
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.textContent = 'Copiar';
+                    copyBtn.addEventListener('click', function() {
+                        navigator.clipboard.writeText(code.textContent).then(() => {
+                            showToast();
+                        });
+                    });
+                    
+                    code.appendChild(copyBtn);
+                    info.appendChild(name);
+                    info.appendChild(code);
+                    card.appendChild(preview);
+                    card.appendChild(info);
+                    container.appendChild(card);
+                });
+            }
+            
+            // Función para mostrar notificación de copiado
+            function showToast() {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            }
+            
+            // Generar nuevos gradientes aleatorios
+            function generateRandomGradients() {
+                // Usamos los preestablecidos para mantener los nombres temáticos
+                const gradients = [...presetGradients];
+                
+                // Mezclar el array para mostrar en orden aleatorio
+                return gradients.sort(() => Math.random() - 0.5);
+            }
+            
+            // Mostrar gradientes iniciales
+            displayGradients(presetGradients);
+            
+            // Configurar el botón de generar
+            document.getElementById('generateBtn').addEventListener('click', function() {
+                const randomGradients = generateRandomGradients();
+                displayGradients(randomGradients);
+            });
+        });
+    </script>
+</body>
+</html>
